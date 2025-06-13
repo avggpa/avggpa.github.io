@@ -163,6 +163,10 @@
       font-size: 1.1rem;
       margin-top: auto;
     }
+    #honorMsg {
+      margin-top: 8px;
+      color: var(--accent);
+    }
 
     @media (max-width: 600px) {
       .controls {
@@ -227,6 +231,7 @@
     <div id="results">
       <p>Unweighted GPA: <strong id="ugpa">—</strong></p>
       <p>Weighted GPA: <strong id="wgpa">—</strong></p>
+      <p id="honorMsg" style="display:none"></p>
     </div>
   </div>
 
@@ -247,9 +252,7 @@
       const rows = classesTbody.querySelectorAll('tr');
       rows.forEach((tr, index) => {
         const input = tr.querySelector('td.name-cell input');
-        if (/^Class \d+$/.test(input.value)) {
-          input.value = `Class ${index + 1}`;
-        }
+        input.placeholder = `Class ${index + 1}`;
       });
     }
 
@@ -260,7 +263,7 @@
       nameTd.className = 'name-cell';
       const nameInput = document.createElement('input');
       nameInput.type = 'text';
-      nameInput.value = `Class ${classesTbody.children.length + 1}`;
+      nameInput.placeholder = `Class ${classesTbody.children.length + 1}`;
       nameTd.appendChild(nameInput);
       tr.appendChild(nameTd);
 
@@ -328,6 +331,8 @@
       'D+':1.3,'D':1.0,'D-':0.7,'F':0.0
     };
 
+    const honorMsgEl = document.getElementById('honorMsg');
+
     document.getElementById('calc').addEventListener('click', () => {
       let sumU=0, sumW=0, cnt=0;
       classesTbody.querySelectorAll('tr').forEach(tr => {
@@ -343,8 +348,17 @@
         alert('Enter at least one valid grade.');
         return;
       }
-      document.getElementById('ugpa').textContent = (sumU/cnt).toFixed(2);
+      const uGpa = sumU/cnt;
+      document.getElementById('ugpa').textContent = uGpa.toFixed(2);
       document.getElementById('wgpa').textContent = (sumW/cnt).toFixed(2);
+
+      if (uGpa >= 3.70) {
+        honorMsgEl.textContent = 'Congratulations, you got high honor roll!';
+        honorMsgEl.style.display = 'block';
+      } else {
+        honorMsgEl.style.display = 'none';
+        honorMsgEl.textContent = '';
+      }
     });
   </script>
 </body>
